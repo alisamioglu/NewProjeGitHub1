@@ -49,7 +49,7 @@ class LogIn : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
 
-                    val intent = Intent(this@LogIn, MainActivity::class.java)
+                    val intent = Intent(this@LogIn, HomePage::class.java)
                     finish()
                     startActivity(intent)
 
