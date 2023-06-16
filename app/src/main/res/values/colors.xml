@@ -15,5 +15,8 @@
     <color name="textColor">#ffe7ba</color>
     <color name="butoncolor">#f08080</color>
     <color name="mesaagebox">#ff7f00</color>
+    <color name="sentcolor">#d9fdd3</color>
+    <color name="sentcolor2">#ffffff</color>
+    <color name="sentcolor3">#06cf9c</color>
 
 </resources>

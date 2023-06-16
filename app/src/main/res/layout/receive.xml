@@ -15,9 +15,10 @@
             android:id="@+id/txt_receive_message"
             android:layout_width="162dp"
             android:layout_height="wrap_content"
-
+            android:background="@color/sentcolor2"
             android:padding="10dp"
             android:text="Gelen Mesaj"
+            android:textColor="@color/black"
 
             android:textSize="18sp" />
 

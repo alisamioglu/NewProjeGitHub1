@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/consarkaplan"
+    android:background="@drawable/weyzap"
     tools:context=".ChatActivity">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -37,8 +37,8 @@
         <ImageView
             android:id="@+id/sendButton"
             android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:src="@drawable/pngegg33"
+            android:layout_height="60dp"
+            android:src="@drawable/pnnngegg"
             android:layout_weight="20"/>
 
 

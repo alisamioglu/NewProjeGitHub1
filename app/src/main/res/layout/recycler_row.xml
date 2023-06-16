@@ -13,10 +13,10 @@
         android:text="Email Adresi"
         android:textSize="25sp"
         android:layout_margin="5dp"
-        android:textColor="@color/purple_700"
+        android:textColor="@color/black"
         >
     </TextView>
-    
+
     <ImageView
         android:id="@+id/recyclerImageView"
         android:layout_width="300dp"
@@ -31,12 +31,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textSize="18sp"
-        android:textColor="@color/purple_200"
+        android:textColor="@color/black"
         android:text="Duyuru"
         android:layout_margin="5dp"
         >
 
 
     </TextView>
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/black"
+        android:text="TextView" />
 
 </LinearLayout>
