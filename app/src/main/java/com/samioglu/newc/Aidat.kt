@@ -1,5 +1,6 @@
 package com.samioglu.newc
 
+import android.content.Context
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
@@ -25,6 +26,8 @@ class Aidat : AppCompatActivity() {
 
     private lateinit var balanceTextView: TextView
     private lateinit var paymentButton: Button
+    private lateinit var paymentInfoTextView: TextView
+    private lateinit var userRef: DatabaseReference
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,67 +41,93 @@ class Aidat : AppCompatActivity() {
 
         balanceTextView = findViewById(R.id.textView)
         paymentButton = findViewById(R.id.button3)
+        paymentInfoTextView = findViewById(R.id.paymentInfoTextView)
 
         if (userId != null) {
-            val userRef = databaseRef.child("users").child(userId)
+            userRef = databaseRef.child("users").child(userId)
             userRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    val balance = snapshot.child("balance").getValue(Long::class.java)
-                    val lastPaymentTimestamp = snapshot.child("lastPaymentTimestamp").getValue(Long::class.java)
-                    val currentMonth = snapshot.child("currentMonth").getValue(Int::class.java)
-
-                    if (balance != null && lastPaymentTimestamp != null && currentMonth != null) {
-                        val currentTime = Calendar.getInstance().timeInMillis
-                        val elapsedTime = currentTime - lastPaymentTimestamp
-
-                        if (elapsedTime >= PAYMENT_INTERVAL) {
-                            // Ödeme yapılması gereken süre geçti, yeni ödeme yapabilir
-                            val remainingMonths = calculateRemainingMonths(currentTime, lastPaymentTimestamp)
-                            val totalPayment = remainingMonths * PAYMENT_AMOUNT
-                            val remainingBalance = balance - totalPayment
-
-                            userRef.child("balance").setValue(remainingBalance)
-                            userRef.child("lastPaymentTimestamp").setValue(currentTime)
-                            userRef.child("currentMonth").setValue(currentMonth + remainingMonths)
-
-                            balanceTextView.text = remainingBalance.toString()
-
-                            if (currentMonth == 0) {
-                                // İlk ödeme durumunda sadece ödeme mesajını göster
-                                showInitialPaymentMessage(totalPayment, remainingBalance)
-                            } else {
-                                // Diğer ödemelerde ödeme mesajını göster
-                                showPaymentSuccessMessage(remainingMonths, totalPayment, remainingBalance)
-                            }
-
-                            // Ödeme yapıldıktan sonra butonu etkinleştir
-                            paymentButton.isEnabled = true
-                        } else {
-                            // Henüz ödeme yapılamaz, uyarı mesajını göster
-                            balanceTextView.text = balance.toString()
-                            paymentButton.isEnabled = false
-                            showPaymentWarningMessage(elapsedTime)
-                        }
-                    } else {
-                        // Kullanıcının bakiyesi, son ödeme zaman damgası veya mevcut ay henüz tanımlanmamış
-                        val initialBalance = 1200L
-                        val initialLastPaymentTimestamp = Calendar.getInstance().timeInMillis
-                        val initialCurrentMonth = 0
-
-                        userRef.child("balance").setValue(initialBalance)
-                        userRef.child("lastPaymentTimestamp").setValue(initialLastPaymentTimestamp)
-                        userRef.child("currentMonth").setValue(initialCurrentMonth)
-
-                        balanceTextView.text = initialBalance.toString()
-                        paymentButton.isEnabled = false
-                        showInitialPaymentMessage(initialBalance, initialBalance)
-                    }
+                    // Verileri al ve ayarla
+                    retrieveAndSetData(snapshot)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Hata durumunda yapılacak işlemler
+                    // Hata durumuyla ilgili işlemler burada yapılabilir
                 }
             })
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Verileri güncelle
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            userRef = databaseRef.child("users").child(userId)
+            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    // Verileri al ve ayarla
+                    retrieveAndSetData(snapshot)
+
+                    // Mesajı göster
+                    showPaymentInfoMessage(snapshot)
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+                    // Hata durumuyla ilgili işlemler burada yapılabilir
+                }
+            })
+        }
+    }
+
+    private fun retrieveAndSetData(snapshot: DataSnapshot) {
+        // Verileri al ve ayarla
+        val balance = snapshot.child("balance").getValue(Long::class.java)
+        val lastPaymentTimestamp = snapshot.child("lastPaymentTimestamp").getValue(Long::class.java)
+        val currentMonth = snapshot.child("currentMonth").getValue(Int::class.java)
+
+        if (balance != null && lastPaymentTimestamp != null && currentMonth != null) {
+            val currentTime = Calendar.getInstance().timeInMillis
+            val elapsedTime = currentTime - lastPaymentTimestamp
+
+            if (elapsedTime >= PAYMENT_INTERVAL) {
+                // Ödeme yapılması gereken süre geçti, yeni ödeme yapabilir
+                val remainingMonths = calculateRemainingMonths(currentTime, lastPaymentTimestamp)
+                val totalPayment = remainingMonths * PAYMENT_AMOUNT
+                val remainingBalance = balance - totalPayment
+
+                userRef.child("balance").setValue(remainingBalance)
+                userRef.child("lastPaymentTimestamp").setValue(currentTime)
+                userRef.child("currentMonth").setValue(currentMonth + remainingMonths)
+
+                balanceTextView.text = remainingBalance.toString()
+
+                if (currentMonth == 0) {
+                    showInitialPaymentMessage(totalPayment, remainingBalance)
+                } else {
+                    showPaymentSuccessMessage(remainingMonths, totalPayment, remainingBalance)
+                }
+
+                paymentButton.isEnabled = true
+            } else {
+                balanceTextView.text = balance.toString()
+                paymentButton.isEnabled = false
+                showPaymentWarningMessage(elapsedTime)
+            }
+        } else {
+            val initialBalance = 1200L
+            val initialLastPaymentTimestamp = Calendar.getInstance().timeInMillis
+            val initialCurrentMonth = 0
+
+            userRef.child("balance").setValue(initialBalance)
+            userRef.child("lastPaymentTimestamp").setValue(initialLastPaymentTimestamp)
+            userRef.child("currentMonth").setValue(initialCurrentMonth)
+
+            balanceTextView.text = initialBalance.toString()
+            paymentButton.isEnabled = false
+            showInitialPaymentMessage(initialBalance, initialBalance)
         }
     }
 
@@ -108,21 +137,45 @@ class Aidat : AppCompatActivity() {
         return min(remainingMonths, TOTAL_MONTHS)
     }
 
+    private fun addPaymentInfoMessage(paymentNumber: Int) {
+        val paymentInfo = "$paymentNumber. aidat ödemesi yapıldı."
+        val currentText = paymentInfoTextView.text.toString()
+
+        val updatedText = if (currentText.isNotEmpty()) {
+            "$currentText\n$paymentInfo"
+        } else {
+            paymentInfo
+        }
+
+        paymentInfoTextView.text = updatedText
+    }
+
     private fun showPaymentSuccessMessage(remainingMonths: Int, totalPayment: Long, remainingBalance: Long) {
         val message = "$remainingMonths adet aidat ödendi. Toplam ödeme miktarı: $totalPayment TL. Kalan bakiye: $remainingBalance TL."
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
+
+        addPaymentInfoMessage(remainingMonths) // Ödeme bilgi mesajını ekle
     }
 
     private fun showPaymentWarningMessage(elapsedTime: Long) {
         val minutesRemaining = (PAYMENT_INTERVAL - elapsedTime) / 60000
         val message = "Son ödemenizin üzerinden $minutesRemaining dakika geçmeden yeni ödeme yapamazsınız."
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
     private fun showInitialPaymentMessage(totalPayment: Long, remainingBalance: Long) {
         val message = "İlk ödemenizi yapmanız gerekmektedir. Ödeme miktarı: $totalPayment TL. Kalan bakiye: $remainingBalance TL."
-        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show()
     }
 
-    // Diğer yardımcı fonksiyonlar...
+    private fun showPaymentInfoMessage(snapshot: DataSnapshot) {
+        val paymentNumber = snapshot.child("currentMonth").getValue(Int::class.java)
+        if (paymentNumber != null) {
+            addPaymentInfoMessage(paymentNumber)
+        }
+    }
+
+    // Diğer yöntemler burada...
 }
+
+
