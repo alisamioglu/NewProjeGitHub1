@@ -19,7 +19,7 @@ class Aidat : AppCompatActivity() {
 
     private val PAYMENT_AMOUNT = 100L
     private val TOTAL_MONTHS = 12
-    private val PAYMENT_INTERVAL = 120000L // 2 dakika (2 * 60 * 1000)
+    private val PAYMENT_INTERVAL = 120000L
 
     private lateinit var databaseRef: DatabaseReference
     private lateinit var auth: FirebaseAuth
@@ -47,20 +47,24 @@ class Aidat : AppCompatActivity() {
             userRef = databaseRef.child("users").child(userId)
             userRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    // Verileri al ve ayarla
+
                     retrieveAndSetData(snapshot)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Hata durumuyla ilgili işlemler burada yapılabilir
+
                 }
             })
+        }
+
+        paymentButton.setOnClickListener {
+            makePayment()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        // Verileri güncelle
+
         val currentUser = auth.currentUser
         val userId = currentUser?.uid
 
@@ -68,22 +72,22 @@ class Aidat : AppCompatActivity() {
             userRef = databaseRef.child("users").child(userId)
             userRef.addListenerForSingleValueEvent(object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
-                    // Verileri al ve ayarla
+
                     retrieveAndSetData(snapshot)
 
-                    // Mesajı göster
+
                     showPaymentInfoMessage(snapshot)
                 }
 
                 override fun onCancelled(error: DatabaseError) {
-                    // Hata durumuyla ilgili işlemler burada yapılabilir
+
                 }
             })
         }
     }
 
     private fun retrieveAndSetData(snapshot: DataSnapshot) {
-        // Verileri al ve ayarla
+
         val balance = snapshot.child("balance").getValue(Long::class.java)
         val lastPaymentTimestamp = snapshot.child("lastPaymentTimestamp").getValue(Long::class.java)
         val currentMonth = snapshot.child("currentMonth").getValue(Int::class.java)
@@ -93,7 +97,7 @@ class Aidat : AppCompatActivity() {
             val elapsedTime = currentTime - lastPaymentTimestamp
 
             if (elapsedTime >= PAYMENT_INTERVAL) {
-                // Ödeme yapılması gereken süre geçti, yeni ödeme yapabilir
+
                 val remainingMonths = calculateRemainingMonths(currentTime, lastPaymentTimestamp)
                 val totalPayment = remainingMonths * PAYMENT_AMOUNT
                 val remainingBalance = balance - totalPayment
@@ -131,6 +135,51 @@ class Aidat : AppCompatActivity() {
         }
     }
 
+    private fun makePayment() {
+        val currentUser = auth.currentUser
+        val userId = currentUser?.uid
+
+        if (userId != null) {
+            userRef = databaseRef.child("users").child(userId)
+            userRef.addListenerForSingleValueEvent(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    val balance = snapshot.child("balance").getValue(Long::class.java)
+                    val lastPaymentTimestamp = snapshot.child("lastPaymentTimestamp").getValue(Long::class.java)
+                    val currentMonth = snapshot.child("currentMonth").getValue(Int::class.java)
+
+                    if (balance != null && lastPaymentTimestamp != null && currentMonth != null) {
+                        val currentTime = Calendar.getInstance().timeInMillis
+                        val elapsedTime = currentTime - lastPaymentTimestamp
+
+                        if (elapsedTime >= PAYMENT_INTERVAL) {
+                            val remainingMonths = calculateRemainingMonths(currentTime, lastPaymentTimestamp)
+                            val totalPayment = remainingMonths * PAYMENT_AMOUNT
+                            val remainingBalance = balance - totalPayment
+
+                            userRef.child("balance").setValue(remainingBalance)
+                            userRef.child("lastPaymentTimestamp").setValue(currentTime)
+                            userRef.child("currentMonth").setValue(currentMonth + remainingMonths)
+
+                            balanceTextView.text = remainingBalance.toString()
+
+                            if (currentMonth == 0) {
+                                showInitialPaymentMessage(totalPayment, remainingBalance)
+                            } else {
+                                showPaymentSuccessMessage(remainingMonths, totalPayment, remainingBalance)
+                            }
+                        } else {
+                            showPaymentWarningMessage(elapsedTime)
+                        }
+                    }
+                }
+
+                override fun onCancelled(error: DatabaseError) {
+
+                }
+            })
+        }
+    }
+
     private fun calculateRemainingMonths(currentTime: Long, lastPaymentTimestamp: Long): Int {
         val elapsedTime = currentTime - lastPaymentTimestamp
         val remainingMonths = (elapsedTime / PAYMENT_INTERVAL).toInt()
@@ -154,7 +203,7 @@ class Aidat : AppCompatActivity() {
         val message = "$remainingMonths adet aidat ödendi. Toplam ödeme miktarı: $totalPayment TL. Kalan bakiye: $remainingBalance TL."
         Toast.makeText(this, message, Toast.LENGTH_LONG).show()
 
-        addPaymentInfoMessage(remainingMonths) // Ödeme bilgi mesajını ekle
+        addPaymentInfoMessage(remainingMonths)
     }
 
     private fun showPaymentWarningMessage(elapsedTime: Long) {
@@ -175,7 +224,5 @@ class Aidat : AppCompatActivity() {
         }
     }
 
-    // Diğer yöntemler burada...
+
 }
-
-

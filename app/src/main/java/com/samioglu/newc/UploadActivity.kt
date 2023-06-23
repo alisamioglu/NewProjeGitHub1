@@ -77,7 +77,7 @@ class UploadActivity : AppCompatActivity() {
 
     fun uploadClicked(view: View) {
 
-        //UUID -> image name
+
         val uuid = UUID.randomUUID()
         val imageName = "$uuid.jpg"
 
@@ -155,11 +155,11 @@ class UploadActivity : AppCompatActivity() {
             ActivityResultContracts.RequestPermission()
         ) { result ->
             if (result) {
-                //permission granted
+
                 val intentToGallery = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                 activityResultLauncher.launch(intentToGallery)
             } else {
-                //permission denied
+
                 Toast.makeText(this@UploadActivity, "Permisson needed!", Toast.LENGTH_LONG).show()
             }
         }

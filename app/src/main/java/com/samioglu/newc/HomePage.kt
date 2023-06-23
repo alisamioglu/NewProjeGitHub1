@@ -32,13 +32,13 @@ class HomePage : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
         listView.adapter = adapter
 
-        //yönlenirme
+
 
 
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val selectedItem = items[position]
 
-            // Seçilen öğeye göre yeni bir sayfaya geçiş yapabilirsiniz.
+
             when (selectedItem) {
                 "Aidat Ödeme" -> {
                     val intent = Intent(this, Aidat::class.java)

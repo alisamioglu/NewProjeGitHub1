@@ -58,8 +58,6 @@ class Duyuru : AppCompatActivity() {
         getDataFromFirestore()
 
 
-
-
         //recyclerview
 
         binding.NoticeBoard.layoutManager = LinearLayoutManager(this)
@@ -87,9 +85,6 @@ class Duyuru : AppCompatActivity() {
                             val comment = document.get("comment") as String
                             val useremail = document.get("userEmail") as String
                             val downloadUrl = document.get("downloadUrl") as String
-
-                            //val timestamp = document.get("date") as Timestamp
-                            //val date = timestamp.toDate()
 
                             val post = Post(useremail,comment, downloadUrl)
                             postArrayList.add(post)
