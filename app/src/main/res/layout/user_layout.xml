@@ -1,11 +1,9 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- user_layout.xml -->
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/sentcolor">
 
-
-        
         <TextView
             android:layout_marginTop="5dp"
             android:id="@+id/txt_name"
@@ -15,7 +13,7 @@
             android:textSize="40sp"
             android:textStyle="bold"
             android:layout_marginLeft="10dp"/>
-        
+
         <View
             android:layout_below="@+id/txt_name"
             android:layout_marginTop="5dp"
@@ -23,6 +21,27 @@
             android:layout_height="1dp"
             android:background="@color/black"/>
 
+        <!-- Yeni eklenen TextView for the counter -->
+        <TextView
+            android:id="@+id/counterTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/txt_name"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="10dp"
+            android:text=""
+            android:textSize="16sp"
+            android:textColor="@android:color/holo_red_dark"/>
 
+        <!-- Yeni eklenen ImageView for the notification indicator -->
+        <ImageView
+            android:id="@+id/notificationIndicator"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_below="@+id/txt_name"
+            android:layout_marginTop="5dp"
+            android:layout_marginLeft="5dp"
+            android:src="@drawable/ic_notification_indicator"
+            android:visibility="gone"/> <!-- Görünürlük özelliği eklendi -->
 
 </RelativeLayout>

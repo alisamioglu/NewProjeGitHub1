@@ -27,7 +27,7 @@ class HomePage : AppCompatActivity() {
 
         listView = findViewById(R.id.listView)
 
-        val items = arrayOf("Aidat Ödeme", "Sipariş Ver", "Duyurular")
+        val items = arrayOf("Aidat Ödeme", "Sipariş Ver", "Duyurular", "Dilek ve Şikayet")
 
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
         listView.adapter = adapter
@@ -52,6 +52,14 @@ class HomePage : AppCompatActivity() {
                     val intent = Intent(this, Duyuru::class.java)
                     startActivity(intent)
                 }
+
+
+                "Dilek ve Şikayet" -> {
+                    val intent = Intent(this, BoxActivity::class.java)
+                    startActivity(intent)
+                    }
+
+
             }
         }
 

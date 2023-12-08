@@ -1,13 +1,16 @@
 package com.samioglu.newc
 
-class Message {
-    var message: String? = null
-    var senderId: String? = null
+data class Message(
+    var id: String? = null,
+    var message: String? = null,
+    var senderId: String? = null,
+    var counter: Int = 0
+) {
+    fun incrementCounter() {
+        counter++
+    }
 
-    constructor(){}
-
-    constructor(message: String?, senderId: String?){
-        this.message = message
-        this.senderId = senderId
+    fun resetCounter() {
+        counter = 0
     }
 }
