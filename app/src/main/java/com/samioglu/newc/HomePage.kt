@@ -1,22 +1,28 @@
 package com.samioglu.newc
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
+import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.*
 import com.google.firebase.ktx.Firebase
 import com.samioglu.newc.databinding.ActivityHomePageBinding
 
 class HomePage : AppCompatActivity() {
+
     private lateinit var binding: ActivityHomePageBinding
     private lateinit var listView: ListView
-    private lateinit var auth : FirebaseAuth
+    private lateinit var txtApartmanAdi: TextView
+    private lateinit var auth: FirebaseAuth
+    private lateinit var databaseReference: DatabaseReference
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityHomePageBinding.inflate(layoutInflater)
@@ -26,18 +32,32 @@ class HomePage : AppCompatActivity() {
         auth = Firebase.auth
 
         listView = findViewById(R.id.listView)
+        txtApartmanAdi = findViewById(R.id.txt_apartman_adi_home)
+
+        val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
+        databaseReference = FirebaseDatabase.getInstance().getReference("users/$currentUserUid/apartmanAdi")
+
+        databaseReference.addValueEventListener(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val apartmanAdi = snapshot.getValue(String::class.java)
+
+                // Eğer apartmanAdi null ise, varsayılan bir değer kullanabilirsiniz
+                val displayedApartmanAdi = apartmanAdi ?: "Varsayılan Apartman Adı"
+
+                txtApartmanAdi.text = " $displayedApartmanAdi : APARTMANINA HOŞGELDİNİZ"
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                // Hata durumunda yapılacak işlemler
+            }
+        })
 
         val items = arrayOf("Aidat Ödeme", "Sipariş Ver", "Duyurular", "Dilek ve Şikayet")
-
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
         listView.adapter = adapter
 
-
-
-
         listView.onItemClickListener = AdapterView.OnItemClickListener { _, _, position, _ ->
             val selectedItem = items[position]
-
 
             when (selectedItem) {
                 "Aidat Ödeme" -> {
@@ -52,37 +72,26 @@ class HomePage : AppCompatActivity() {
                     val intent = Intent(this, Duyuru::class.java)
                     startActivity(intent)
                 }
-
-
                 "Dilek ve Şikayet" -> {
                     val intent = Intent(this, BoxActivity::class.java)
                     startActivity(intent)
-                    }
-
-
+                }
             }
         }
-
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-
-        val menuInflater = menuInflater
-        menuInflater.inflate(R.menu.menu,menu)
-
-
+        menuInflater.inflate(R.menu.menu, menu)
         return super.onCreateOptionsMenu(menu)
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-
         if (item.itemId == R.id.logout) {
             auth.signOut()
-            val intent = Intent(this,LogIn::class.java)
+            val intent = Intent(this, LogIn::class.java)
             startActivity(intent)
             finish()
         }
-
         return super.onOptionsItemSelected(item)
     }
 }

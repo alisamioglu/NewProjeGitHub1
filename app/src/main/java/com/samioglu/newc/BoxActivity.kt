@@ -17,7 +17,7 @@ class BoxActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_box)
 
-        // Firebase veritabanı referansını alın ve "boxpost" düğümüne gönderin
+
         database = FirebaseDatabase.getInstance().reference.child("boxpost")
 
         val postList: ListView = findViewById(R.id.postList)
@@ -31,7 +31,7 @@ class BoxActivity : AppCompatActivity() {
             val content = postInput.text.toString()
             postManager.addPost(content)
 
-            // Firebase veritabanına yazıyı ekle
+
             val key = database.push().key
             key?.let {
                 database.child(it).setValue(content)
@@ -43,7 +43,7 @@ class BoxActivity : AppCompatActivity() {
     }
 
     private fun updatePostList() {
-        // Firebase veritabanından yazıları çek
+
         database.addListenerForSingleValueEvent(object : ValueEventListener {
             override fun onDataChange(dataSnapshot: DataSnapshot) {
                 val postStrings = mutableListOf<String>()

@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.samioglu.newc.ChatActivity
 import com.samioglu.newc.R
 
-
 class UserAdapter(val context: Context, val userList: ArrayList<User>) :
     RecyclerView.Adapter<UserAdapter.UserViewHolder>() {
 
@@ -23,6 +22,9 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>) :
         val currentUser = userList[position]
 
         holder.textName.text = currentUser.name
+
+        // Apartman Adı'nı göster
+        holder.apartmanAdiTextView.text = "Apartman Adı: ${currentUser.apartmanAdi}"
 
         // Bildirim simgesini gizle veya göster
         if (currentUser.hasUnreadMessages()) {
@@ -51,6 +53,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>) :
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textName = itemView.findViewById<TextView>(R.id.txt_name)
+        val apartmanAdiTextView = itemView.findViewById<TextView>(R.id.txt_apartman_adi_home)
         val notificationIndicator = itemView.findViewById<ImageView>(R.id.notificationIndicator)
         val counterTextView = itemView.findViewById<TextView>(R.id.counterTextView)
     }

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -31,7 +32,6 @@
 
     <EditText
         android:id="@+id/userEmailText"
-
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_marginStart="14dp"
@@ -54,10 +54,9 @@
         android:id="@+id/passwordText"
         android:layout_width="0dp"
         android:layout_height="0dp"
-
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="91dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/edittextarkaplan"
         android:drawableLeft="@drawable/ic_action_pass"
         android:ems="10"
@@ -66,17 +65,36 @@
         android:textColor="@color/textColor"
         android:textColorHint="@color/textColor"
         android:textSize="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintBottom_toTopOf="@+id/apartmanAdiText"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/userEmailText" />
+
+    <EditText
+        android:id="@+id/apartmanAdiText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="14dp"
+        android:layout_marginEnd="14dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/edittextarkaplan"
+        android:drawableLeft="@drawable/ic_action_pass"
+        android:ems="10"
+        android:hint="Apartman Adınız "
+        android:inputType="text"
+        android:textColor="@color/textColor"
+        android:textColorHint="@color/textColor"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
 
     <Button
         android:id="@+id/button2"
         android:layout_width="138dp"
         android:layout_height="0dp"
-        android:layout_marginBottom="146dp"
-
+        android:layout_marginBottom="16dp"
         android:background="@drawable/butonarkaplan"
         android:backgroundTint="@color/butoncolor"
         android:onClick="signUpClicked"
@@ -84,7 +102,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordText" />
+        app:layout_constraintTop_toBottomOf="@+id/apartmanAdiText" />
 
     <ImageView
         android:id="@+id/imageView2"
@@ -96,6 +114,5 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/ic_action_passi" />
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -15,7 +15,7 @@ class ChatActivity : AppCompatActivity() {
     private lateinit var chatRecyclerView: RecyclerView
     private lateinit var messageBox: EditText
     private lateinit var sendButton: ImageView
-    private lateinit var messageAdapter: MessageAdapter
+    private lateinit var messageAdapter: MessageAdaptor
     private lateinit var messageList: ArrayList<Message>
     private lateinit var mDbRef: DatabaseReference
 
@@ -43,11 +43,11 @@ class ChatActivity : AppCompatActivity() {
         messageBox = findViewById(R.id.messageBox)
         sendButton = findViewById(R.id.sendButton)
         messageList = ArrayList()
-        messageAdapter = MessageAdapter(this, messageList)
+        messageAdapter = MessageAdaptor(this, messageList)
         chatRecyclerView.layoutManager = LinearLayoutManager(this)
         chatRecyclerView.adapter = messageAdapter
 
-        currentUser = User(name, null, senderUid, null)
+        currentUser = User(name, null, senderUid, null, apartmanAdi = null)
 
         mDbRef.child("chats").child(senderRoom!!).child("messages")
             .addValueEventListener(object : ValueEventListener {

@@ -16,6 +16,7 @@ class SignUp : AppCompatActivity() {
     private lateinit var edtName: EditText
     private lateinit var edtEmail: EditText
     private lateinit var edtPassword: EditText
+    private lateinit var edtApartmanAdi: EditText  // Yeni eklenen alan
     private lateinit var btnSignUp: Button
     private lateinit var mAuth: FirebaseAuth
     private lateinit var mDbRef: DatabaseReference
@@ -30,24 +31,24 @@ class SignUp : AppCompatActivity() {
         edtName = findViewById(R.id.userName)
         edtEmail = findViewById(R.id.userEmailText)
         edtPassword = findViewById(R.id.passwordText)
+        edtApartmanAdi = findViewById(R.id.apartmanAdiText)  // Yeni eklenen alan
         btnSignUp = findViewById(R.id.button2)
 
         btnSignUp.setOnClickListener {
-
             val name = edtName.text.toString()
             val email = edtEmail.text.toString()
             val password = edtPassword.text.toString()
+            val apartmanAdi = edtApartmanAdi.text.toString()  // Yeni eklenen alanın değeri
 
-            signUp(name, email, password)
+            signUp(name, email, password, apartmanAdi)
         }
     }
 
-    private fun signUp(name: String, email: String, password: String) {
+    private fun signUp(name: String, email: String, password: String, apartmanAdi: String) {
         mAuth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-
-                    addUserToDatabase(name, email, mAuth.currentUser?.uid!!)
+                    addUserToDatabase(name, email, mAuth.currentUser?.uid!!, apartmanAdi)
 
                     val intent = Intent(this@SignUp, HomePage::class.java)
                     finish()
@@ -55,15 +56,16 @@ class SignUp : AppCompatActivity() {
 
                 } else {
                     Toast.makeText(this@SignUp, "Some Error occurred", Toast.LENGTH_SHORT).show()
-
                 }
             }
     }
 
-    private fun addUserToDatabase(name: String, email: String, uid: String) {
+    private fun addUserToDatabase(name: String, email: String, uid: String, apartmanAdi: String) {
         mDbRef = FirebaseDatabase.getInstance().getReference()
 
-        // lastReadMessageId parametresini null olarak belirledim. Bu değeri gerçek bir senaryoya göre değiştirebilirsiniz.
-        mDbRef.child("user").child(uid).setValue(User(name, email, uid, null))
+        // "users" koleksiyonu altında kullanıcı bilgilerini ekleyin
+        val user = User(name, email, uid, null, apartmanAdi) // lastReadMessageId'i null olarak bıraktım, çünkü bu aşamada bilinmiyor.
+        mDbRef.child("users").child(uid).setValue(user)
     }
+
 }
