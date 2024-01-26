@@ -44,7 +44,7 @@ class HomePage : AppCompatActivity() {
                 // Eğer apartmanAdi null ise, varsayılan bir değer kullanabilirsiniz
                 val displayedApartmanAdi = apartmanAdi ?: "Varsayılan Apartman Adı"
 
-                txtApartmanAdi.text = " $displayedApartmanAdi : APARTMANINA HOŞGELDİNİZ"
+                txtApartmanAdi.text = " $displayedApartmanAdi Apartmanına  HOŞGELDİNİZ"
             }
 
             override fun onCancelled(error: DatabaseError) {
@@ -52,6 +52,8 @@ class HomePage : AppCompatActivity() {
             }
         })
 
+        // Sadece aynı apartmanda bulunan kullanıcıları listelemek için bir filtreleme yapacağız
+        val currentUserApartment = databaseReference.toString()  // Apartman adını al
         val items = arrayOf("Aidat Ödeme", "Sipariş Ver", "Duyurular", "Dilek ve Şikayet")
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, items)
         listView.adapter = adapter
@@ -65,7 +67,10 @@ class HomePage : AppCompatActivity() {
                     startActivity(intent)
                 }
                 "Sipariş Ver" -> {
+                    // Sipariş ver ekranında sadece aynı apartmanda bulunan kullanıcıları göstermek için
+                    // Intent'e aynı apartman adını ekleyerek gönderiyoruz
                     val intent = Intent(this, MainActivity::class.java)
+                    intent.putExtra("currentUserApartment", currentUserApartment)
                     startActivity(intent)
                 }
                 "Duyurular" -> {

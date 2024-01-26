@@ -7,7 +7,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.samioglu.newc.*
+
 
 import com.samioglu.newc.databinding.ActivityDuyuruBinding
 
