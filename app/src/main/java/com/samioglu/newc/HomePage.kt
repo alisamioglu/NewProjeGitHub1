@@ -35,7 +35,7 @@ class HomePage : AppCompatActivity() {
         txtApartmanAdi = findViewById(R.id.txt_apartman_adi_home)
 
         val currentUserUid = FirebaseAuth.getInstance().currentUser?.uid
-        databaseReference = FirebaseDatabase.getInstance().getReference("users/$currentUserUid/apartmanAdi")
+        databaseReference = FirebaseDatabase.getInstance().getReference("user/$currentUserUid/apartmanAdi")
 
         databaseReference.addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {

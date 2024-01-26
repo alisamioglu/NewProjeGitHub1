@@ -6,6 +6,10 @@ class User {
     var apartmanAdi: String? = null // Yeni eklenen alan
     var unreadMessageCount: Int = 0
 
+    constructor() {
+        // Parametresiz kurucu
+    }
+
     constructor(name: String?, email: String?, uid: String?, lastReadMessageId: String?, apartmanAdi: String?) {
         this.name = name
         this.email = email
@@ -19,4 +23,5 @@ class User {
     fun hasUnreadMessages(): Boolean {
         return unreadMessageCount > 0
     }
+
 }

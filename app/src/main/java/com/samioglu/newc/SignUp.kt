@@ -65,7 +65,7 @@ class SignUp : AppCompatActivity() {
 
         // "users" koleksiyonu altında kullanıcı bilgilerini ekleyin
         val user = User(name, email, uid, null, apartmanAdi) // lastReadMessageId'i null olarak bıraktım, çünkü bu aşamada bilinmiyor.
-        mDbRef.child("users").child(uid).setValue(user)
+        mDbRef.child("user").child(uid).setValue(user)
     }
 
 }

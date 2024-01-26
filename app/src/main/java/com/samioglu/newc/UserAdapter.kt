@@ -24,7 +24,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>) :
         holder.textName.text = currentUser.name
 
         // Apartman Adı'nı göster
-        holder.apartmanAdiTextView.text = "Apartman Adı: ${currentUser.apartmanAdi}"
+       // holder.apartmanAdiTextView.text = "Apartman Adı: ${currentUser.apartmanAdi}"
 
         // Bildirim simgesini gizle veya göster
         if (currentUser.hasUnreadMessages()) {
@@ -53,7 +53,7 @@ class UserAdapter(val context: Context, val userList: ArrayList<User>) :
 
     class UserViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val textName = itemView.findViewById<TextView>(R.id.txt_name)
-        val apartmanAdiTextView = itemView.findViewById<TextView>(R.id.txt_apartman_adi_home)
+        // val apartmanAdiTextView = itemView.findViewById<TextView>(R.id.txt_apartman_adi_home)
         val notificationIndicator = itemView.findViewById<ImageView>(R.id.notificationIndicator)
         val counterTextView = itemView.findViewById<TextView>(R.id.counterTextView)
     }
